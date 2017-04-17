@@ -1,11 +1,15 @@
 import { Component } from '@angular/core';
+import { PostService } from '../services/posts.service';
 
 @Component({
   selector: 'test',
   template: `
   <h1>
-    {{title}}
-    {{test}}
+  <ul>
+    <li *ngFor="let post of posts">
+      {{post.id}}. {{post.title}}
+    </li>
+  </ul>
     <input type="text" [(ngModel)]="title"/>
     <hr />
     <h3>Add user</h3>
@@ -22,18 +26,23 @@ import { Component } from '@angular/core';
     </div>
   </h1>
   `,
+  providers: [PostService]
 })
 export class TestComponent {
   title: string;
   test: string;
   users: string[];
   showUsers: boolean;
+  posts: Post[]
 
-  constructor() {
+  constructor(private postService: PostService) {
     this.title = 'app works!';
     this.test = 'test';
     this.users = ['michal', 'artyom', 'strielok'];
     this.showUsers = false;
+    this.postService.getPosts().subscribe(posts => {
+      this.posts = posts;
+    })
   }
 
   toggleUsers() {
@@ -56,4 +65,10 @@ export class TestComponent {
 interface address {
   street: string;
   city: address;
+}
+
+interface Post {
+  id: number;
+  title: string;
+  body: string;
 }
